@@ -9,6 +9,8 @@ import cse4006.util.*;
  */
 public class FriendGraph {
 
+    private final static int MAX_PEOPLE_NUM = 100;
+
     private Person[] peopleList;
     private boolean[][] relation;
 
@@ -17,14 +19,13 @@ public class FriendGraph {
 
     /**
      * Constructor of FriendGraph
-     * @param maxPeopleNumber: Max number of people in graph
      */
-    public FriendGraph(int maxPeopleNumber) {
-        this.maxPeopleCount = maxPeopleNumber;
+    public FriendGraph() {
+        this.maxPeopleCount = MAX_PEOPLE_NUM;
         this.nowPeopleCount = 0;
 
-        this.peopleList = new Person[maxPeopleNumber];
-        this.relation = new boolean[maxPeopleNumber][maxPeopleNumber];
+        this.peopleList = new Person[MAX_PEOPLE_NUM];
+        this.relation = new boolean[MAX_PEOPLE_NUM][MAX_PEOPLE_NUM];
     }
 
     /**
