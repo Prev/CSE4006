@@ -1,6 +1,6 @@
 .gradle
-/build/
-/classes/
+*/build/
+*/classes/
 /debug.log
 !gradle/wrapper/gradle-wrapper.jar
 logs
