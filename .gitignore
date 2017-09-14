@@ -1,0 +1,15 @@
+.gradle
+/build/
+/classes/
+/debug.log
+!gradle/wrapper/gradle-wrapper.jar
+logs
+*.key
+gradle.properties
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out

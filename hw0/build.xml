@@ -1,0 +1,17 @@
+<project name="hw0" basedir="." default="build-jar">
+    <description>hw0 - Friend Graph</description>
+
+    <property name="dist.src" location="src"/>
+    <property name="dist.classes" location="classes"/>
+
+    <target name="compile">
+        <mkdir dir="${dist.classes}"/>
+        <javac srcdir="src" destdir="${dist.classes}"/>
+    </target>
+
+    <target name="build-jar" depends="compile">
+        <jar destfile="hw0.jar"
+             basedir="${dist.classes}">
+        </jar>
+    </target>
+</project>
