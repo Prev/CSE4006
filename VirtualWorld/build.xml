@@ -1,0 +1,14 @@
+<project name="VirtualWorld" basedir="." default="build">
+    <description>hw0 - Friend Graph</description>
+    <property name="dist.src" location="src"/>
+    <property name="dist.classes" location="classes"/>
+    <target name="compile">
+        <mkdir dir="${dist.classes}"/>
+        <javac srcdir="src" destdir="${dist.classes}"/>
+    </target>
+    <target name="build" depends="compile">
+        <jar destfile="virtualworld.jar"
+             basedir="${dist.classes}">
+        </jar>
+    </target>
+</project>
