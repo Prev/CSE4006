@@ -1,8 +1,8 @@
+package parbst.collections;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import static org.junit.Assert.*;
@@ -12,7 +12,7 @@ public class BSTTest {
 
 	private int[] dataSet;
 	private Random random;
-	private static final int INSERTION_COUNT = 100000;
+	private static final int INSERTION_COUNT = 1000000;
 
 	@Before
 	public void init() {
@@ -24,15 +24,38 @@ public class BSTTest {
 	}
 
 	@Test
-	public void insertTestSingle() throws InterruptedException {
+	public void insertNonThreadTest() throws InterruptedException {
+		BST tree = new MonoBST();
+		for (int d: dataSet)
+			tree.insert(d);
+	}
+
+	@Test
+	public void insertSingleTest() throws InterruptedException {
 		insertWithMulitthreading(1);
+	}
+
+	@Test
+	public void insertDualTest() throws InterruptedException {
+		insertWithMulitthreading(2);
+	}
+
+	@Test
+	public void insertQuadTest() throws InterruptedException {
+		insertWithMulitthreading(4);
+	}
+
+	@Test
+	public void insertOctaTest() throws InterruptedException {
+		insertWithMulitthreading(8);
 	}
 
 	private void insertWithMulitthreading(int threadCount) throws InterruptedException {
 		int seg = INSERTION_COUNT / threadCount;
 		Thread[] threads = new Thread[threadCount];
 
-		BST tree = new BST();
+		BST tree = new ParallelBST();
+
 		for (int i = 0; i < threadCount; i++) {
 			threads[i] = new InsertWorker(tree, dataSet, i * seg, seg);
 			threads[i].start();

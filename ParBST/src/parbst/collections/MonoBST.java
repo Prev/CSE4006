@@ -1,42 +1,38 @@
+package parbst.collections;
+
 /**
  * The sequential Binary Search Tree (for storing int values)
  */
-public class BST {
-
+public class MonoBST implements BST {
 	private Node root;
 
-	public BST() {
+	public MonoBST() {
 		root = null;
 	}
-
 	/**
 	 * Insert data to BST
 	 * @param data
 	 */
+	@Override
 	public void insert(int data) {
 		root = insert(root, data);
 	}
-
 	private Node insert(Node p, int toInsert) {
 		if (p == null)
 			return new Node(toInsert);
-
 		if (toInsert == p.data)
 			return p;
-
 		if (toInsert < p.data)
 			p.left = insert(p.left, toInsert);
 		else
 			p.right = insert(p.right, toInsert);
-
 		return p;
 	}
-
 	/**
 	 * Find min value of BST
 	 * @return
 	 */
-	// you don't need to implement hand-over-hand lock for this function.
+	@Override
 	public int findMin() {
 		if (root == null) {
 			throw new RuntimeException("cannot findMin.");
@@ -47,13 +43,13 @@ public class BST {
 		}
 		return n.data;
 	}
-
 	/**
 	 * Search value from BST
 	 * @param toSearch
 	 * @return True if search data exists
 	 * 		   False otherwise
 	 */
+	@Override
 	public boolean search(int toSearch) {
 		return search(root, toSearch);
 	}
@@ -69,13 +65,13 @@ public class BST {
 		else
 			return search(p.right, toSearch);
 	}
-
 	/**
 	 * Delete value from BST
 	 * @param toDelete
 	 * @return True if deletion is success
 	 * 		   False if fail
 	 */
+	@Override
 	public boolean delete(int toDelete) {
 		try {
 			root = delete(root, toDelete);
@@ -109,10 +105,10 @@ public class BST {
 		}
 		return p.data;
 	}
-
 	/**
 	 * Traversal BST by pre-order
 	 */
+	@Override
 	public void preOrderTraversal() {
 		preOrderHelper(root);
 	}
@@ -124,10 +120,10 @@ public class BST {
 			preOrderHelper(r.right);
 		}
 	}
-
 	/**
 	 * Traversal BST by in-order
 	 */
+	@Override
 	public void inOrderTraversal() {
 		inOrderHelper(root);
 	}
@@ -140,25 +136,21 @@ public class BST {
 			inOrderHelper(r.right);
 		}
 	}
-
 	/**
 	 * Node class in BST
 	 */
 	private class Node {
 		private int data;
 		private Node left, right;
-
 		public Node(int data, Node l, Node r)
 		{
 			left = l; right = r;
 			this.data = data;
 		}
-
 		public Node(int data)
 		{
 			this(data, null, null);
 		}
-
 		public String toString()
 		{
 			return ""+data;
