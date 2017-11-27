@@ -4,7 +4,7 @@ public interface BST {
 
 	/**
 	 * Insert data to BST
-	 * @param data: Data to insert
+	 * @param data: Data to insertMany
 	 */
 	void insert(int data);
 

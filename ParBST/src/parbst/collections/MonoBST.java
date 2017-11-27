@@ -11,7 +11,7 @@ public class MonoBST implements BST {
 	}
 	/**
 	 * Insert data to BST
-	 * @param data: Data to insert
+	 * @param data: Data to insertMany
 	 */
 	@Override
 	public void insert(int data) {
@@ -82,7 +82,7 @@ public class MonoBST implements BST {
 	}
 	private Node delete(Node p, int toDelete) {
 		if (p == null) {
-			throw new RuntimeException("cannot delete.");
+			throw new RuntimeException("cannot deleteMany.");
 		} else if (toDelete < p.data) {
 			p.left = delete (p.left, toDelete);
 		} else if (toDelete > p.data) {
@@ -93,7 +93,7 @@ public class MonoBST implements BST {
 			else {
 				// get data from the rightmost node in the left subtree
 				p.data = retrieveData(p.left);
-				// delete the rightmost node in the left subtree
+				// deleteMany the rightmost node in the left subtree
 				p.left =  delete(p.left, p.data) ;
 			}
 		}

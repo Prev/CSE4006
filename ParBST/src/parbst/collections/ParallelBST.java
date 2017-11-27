@@ -19,7 +19,7 @@ public class ParallelBST implements BST {
 
 	/**
 	 * Insert data to BST
-	 * @param data: Data to insert
+	 * @param data: Data to insertMany
 	 */
 	@Override
 	public void insert(int data) {
