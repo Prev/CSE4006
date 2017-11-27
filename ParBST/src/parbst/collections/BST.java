@@ -4,13 +4,13 @@ public interface BST {
 
 	/**
 	 * Insert data to BST
-	 * @param data
+	 * @param data: Data to insert
 	 */
 	void insert(int data);
 
 	/**
 	 * Find min value of BST
-	 * @return
+	 * @return: Minimal value of tree
 	 */
 	int findMin();
 

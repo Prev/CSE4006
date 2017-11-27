@@ -11,7 +11,7 @@ public class MonoBST implements BST {
 	}
 	/**
 	 * Insert data to BST
-	 * @param data
+	 * @param data: Data to insert
 	 */
 	@Override
 	public void insert(int data) {
@@ -30,7 +30,7 @@ public class MonoBST implements BST {
 	}
 	/**
 	 * Find min value of BST
-	 * @return
+	 * @return: Minimal value of tree
 	 */
 	@Override
 	public int findMin() {

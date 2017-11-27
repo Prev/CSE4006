@@ -3,6 +3,10 @@ package parbst.collections;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * The sequential Binary Search Tree (for storing int values)
+ * Support Parallel execution
+ */
 public class ParallelBST implements BST {
 	private Node root;
 	Lock lock;
@@ -13,6 +17,10 @@ public class ParallelBST implements BST {
 
 	}
 
+	/**
+	 * Insert data to BST
+	 * @param data: Data to insert
+	 */
 	@Override
 	public void insert(int data) {
 		this.lock.lock();
@@ -54,6 +62,10 @@ public class ParallelBST implements BST {
 		}
 	}
 
+	/**
+	 * Find min value of BST
+	 * @return: Minimal value of tree
+	 */
 	@Override
 	public int findMin() {
 		if (root == null) {
@@ -66,6 +78,11 @@ public class ParallelBST implements BST {
 		return n.data;
 	}
 
+	/**
+	 * Search value from BST
+	 * @param toSearch
+	 * @return True if search data exists
+	 */
 	@Override
 	public boolean search(int toSearch) {
 		lock.lock();
@@ -103,6 +120,12 @@ public class ParallelBST implements BST {
 		}
 	}
 
+	/**
+	 * Delete value from BST
+	 * @param toDelete
+	 * @return True if deletion is success
+	 * 		   False if fail
+	 */
 	@Override
 	public boolean delete(int toDelete) {
 		lock.lock();
@@ -113,16 +136,11 @@ public class ParallelBST implements BST {
 		}
 
 		root.lock.lock();
-		Node cur, parent, tmp;
+		Node cur, parent;
 
 		if (root.data == toDelete) {
 			Node oldRoot = root;
-			root = boundaryNode(root);
-
-			if (root != null) {
-				root.left = oldRoot.left;
-				root.right = oldRoot.right;
-			}
+			root = boundaryNode(oldRoot);
 
 			oldRoot.lock.unlock();
 			lock.unlock();
@@ -136,15 +154,10 @@ public class ParallelBST implements BST {
 
 			while (true) {
 				if (cur.data == toDelete) {
-					tmp = boundaryNode(cur);
+					Node tmp = boundaryNode(cur);
 
 					if (parent.left == cur) parent.left = tmp;
 					else parent.right = tmp;
-
-					if (tmp != null) {
-						tmp.left = cur.left;
-						tmp.right = cur.right;
-					}
 
 					cur.lock.unlock();
 					parent.lock.unlock();
@@ -170,11 +183,15 @@ public class ParallelBST implements BST {
 	}
 
 	private Node boundaryNode(Node origin) {
-		Node cur;
-		Node parent = origin;
+		if (origin.left == null)
+			return origin.right;
+		else if (origin.right == null)
+			return origin.left;
+		else {
+			// Retrieve Data
+			Node cur = origin.left;
+			Node parent = origin;
 
-		if (origin.left != null) {
-			cur = origin.left;
 			cur.lock.lock();
 
 			while (cur.right != null) {
@@ -185,118 +202,27 @@ public class ParallelBST implements BST {
 			}
 
 			if (cur.left != null) cur.left.lock.lock();
-			if (parent == origin) parent.left = cur.left;
+
+			if (parent == origin)
+				parent.left = cur.left;
 			else {
 				parent.right = cur.left;
 				parent.lock.unlock();
 			}
 			if (cur.left != null) cur.left.lock.unlock();
 
-			cur.lock.unlock();
 
-		} else if (origin.right != null) {
-			cur = origin.right;
-			cur.lock.lock();
-
-			while (cur.left != null) {
-				if (parent != origin) parent.lock.unlock();
-				parent = cur;
-				cur = cur.left;
-				cur.lock.lock();
-			}
-
-			if (cur.right != null) cur.right.lock.lock();
-			if (parent == origin) parent.right = cur.right;
-			else {
-				parent.left = cur.right;
-				parent.lock.unlock();
-			}
-			if (cur.right != null) cur.right.lock.unlock();
+			cur.left = origin.left;
+			cur.right = origin.right;
 
 			cur.lock.unlock();
-
-		} else {
-			return null;
-		}
-		return cur;
-	}
-
-	/*@Override
-	public boolean delete(int toDelete) {
-		lock.lock();
-		if (root == null) {
-			lock.unlock();
-			return false;
-		}
-		try {
-			root.lock.lock();
-			lock.unlock();
-
-			root = delete(root, toDelete);
-			return true;
-
-		} catch (RuntimeException e) {
-			return false;
+			return cur;
 		}
 	}
-	private Node delete(Node p, int toDelete) {
-		if (p == null) {
-			throw new RuntimeException("cannot delete.");
-		}
 
-		if (toDelete < p.data) {
-			System.out.println("l");
-			if (p.left != null) {
-				p.left.lock.lock();
-				//p.lock.unlock();
-
-				p.left = delete(p.left, toDelete);
-
-			}else {
-				p.lock.unlock();
-				throw new RuntimeException("cannot delete.");
-			}
-
-		} else if (toDelete > p.data) {
-			System.out.println("r");
-			if (p.right != null) {
-				p.right.lock.lock();
-				//p.lock.unlock();
-
-				p.right = delete(p.right, toDelete);
-			}else {
-				p.lock.unlock();
-				throw new RuntimeException("cannot delete.");
-			}
-
-
-		} else {
-			System.out.println("e");
-			if (p.left == null) {
-				System.out.println("er"); p.lock.unlock(); return p.right; }
-			else if (p.right == null) {
-				System.out.println("el"); p.lock.unlock(); return p.left;}
-			else {
-				System.out.println("e+");
-				// get data from the rightmost node in the left subtree
-				p.left.lock.lock();
-				p.data = retrieveData(p.left);
-				// delete the rightmost node in the left subtree
-				p.left =  delete(p.left, p.data);
-
-			}
-		}
-		p.lock.unlock();
-		return p;
-	}
-	private int retrieveData(Node p) {
-		while (p.right != null) {
-			p = p.right;
-		}
-		return p.data;
-	}
-*/
-
+	/**
+	 * Traversal BST by pre-order
+	 */
 	@Override
 	public void preOrderTraversal() {
 		lock.lock();
@@ -322,6 +248,9 @@ public class ParallelBST implements BST {
 		}
 	}
 
+	/**
+	 * Traversal BST by in-order
+	 */
 	@Override
 	public void inOrderTraversal() {
 		lock.lock();
