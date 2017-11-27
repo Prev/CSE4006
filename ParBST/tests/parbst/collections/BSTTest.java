@@ -12,7 +12,7 @@ public class BSTTest {
 
 	private int[] dataSet;
 	private Random random;
-	private static final int INSERTION_COUNT = 1000000;
+	private static final int INSERTION_COUNT = 40000;
 
 	@Before
 	public void init() {
@@ -67,6 +67,19 @@ public class BSTTest {
 		for (int d: dataSet)
 			assertTrue(tree.search(d));
 
+		///// Temp: test deletion two
+
+		threads = new Thread[threadCount];
+		for (int i = 0; i < threadCount; i++) {
+			threads[i] = new DeleteWorker(tree, dataSet, i * seg, seg);
+			threads[i].start();
+		}
+
+		for (int i = 0; i < threadCount; i++)
+			threads[i].join();
+
+		for (int d: dataSet)
+			assertFalse(tree.search(d));
 	}
 
 	class InsertWorker extends Thread {
@@ -87,6 +100,32 @@ public class BSTTest {
 		public void run() {
 			for (int i = offset; i < offset+length; i++)
 				tree.insert(values[i]);
+
+		}
+	}
+
+	class DeleteWorker extends Thread {
+
+		private BST tree;
+		private int[] values;
+		private int offset;
+		private int length;
+
+		DeleteWorker(BST tree, int[] values, int offset, int length) {
+			this.tree = tree;
+			this.values = values;
+			this.offset = offset;
+			this.length = length;
+		}
+
+		@Override
+		public void run() {
+			for (int i = offset; i < offset+length; i++) {
+				//System.out.println("Delete " + values[i]);
+				//tree.inOrderTraversal();
+				//System.out.println("");
+				tree.delete(values[i]);
+			}
 
 		}
 	}
