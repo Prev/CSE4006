@@ -7,7 +7,7 @@ import parbst.util.ParallelBSTUtil;
 
 import java.util.Random;
 
-public class BSTPerformanceTest {
+public class BSTPerformanceTestA {
 
 	private int[] dataSet;
 
@@ -24,19 +24,19 @@ public class BSTPerformanceTest {
 	}
 
 	@Test
-	public void a_singleThreadInsertionTest() {
+	public void singleThreadInsertionTest() {
 		ParallelBSTUtil.insertMany(new ParallelBST(), dataSet, 1);
 	}
 	@Test
-	public void a_dualThreadInsertionTest() {
+	public void dualThreadInsertionTest() {
 		ParallelBSTUtil.insertMany(new ParallelBST(), dataSet, 2);
 	}
 	@Test
-	public void a_quadThreadInsertionTest() {
+	public void quadThreadInsertionTest() {
 		ParallelBSTUtil.insertMany(new ParallelBST(), dataSet, 4);
 	}
 	@Test
-	public void a_octaThreadInsertionTest() {
+	public void octaThreadInsertionTest() {
 		ParallelBSTUtil.insertMany(new ParallelBST(), dataSet, 8);
 	}
 
