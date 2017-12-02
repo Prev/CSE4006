@@ -101,12 +101,9 @@ public class ParallelBST implements BST {
 				if (cur.data == toSearch) {
 					cur.lock.unlock();
 					return true;
-
-				}else if (toSearch < cur.data) {
-					next = cur.left;
-				}else {
-					next = cur.right;
 				}
+
+				next = (toSearch < cur.data) ? cur.left : cur.right;
 
 				if (next == null) {
 					cur.lock.unlock();
@@ -144,13 +141,15 @@ public class ParallelBST implements BST {
 
 			oldRoot.lock.unlock();
 			lock.unlock();
+			return true;
 
 		}else {
+			lock.unlock();
+
 			parent = root;
 			cur = (toDelete < root.data) ? root.left : root.right;
 
 			cur.lock.lock();
-			lock.unlock();
 
 			while (true) {
 				if (cur.data == toDelete) {
@@ -161,25 +160,21 @@ public class ParallelBST implements BST {
 
 					cur.lock.unlock();
 					parent.lock.unlock();
-					break;
+					return true;
 
 				} else {
 					parent.lock.unlock();
+
 					parent = cur;
+					cur = (toDelete < cur.data) ? cur.left : cur.right;
 
-					if (toDelete < cur.data)
-						cur = cur.left;
-					else
-						cur = cur.right;
+					if (cur == null)
+						return false;
+
+					cur.lock.lock();
 				}
-
-				if (cur == null)
-					return false;
-
-				cur.lock.lock();
 			}
 		}
-		return true;
 	}
 
 	private Node boundaryNode(Node origin) {

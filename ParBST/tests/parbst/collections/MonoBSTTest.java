@@ -13,7 +13,7 @@ public class MonoBSTTest {
 	private int[] dataSet;
 
 	private Random random;
-	private static final int DATASET_COUNT = 40000;
+	private static final int DATASET_COUNT = 10000;
 
 	@Before
 	public void init() {
