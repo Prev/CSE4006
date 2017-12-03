@@ -1,0 +1,14 @@
+<project name="parbst" basedir="." default="build-jar">
+    <description>Parallel BST</description>
+    <property name="dist.src" location="src"/>
+    <property name="dist.classes" location="classes"/>
+    <target name="compile">
+        <mkdir dir="${dist.classes}"/>
+        <javac srcdir="src" destdir="${dist.classes}"/>
+    </target>
+    <target name="build-jar" depends="compile">
+        <jar destfile="parbst.jar"
+             basedir="${dist.classes}">
+        </jar>
+    </target>
+</project>

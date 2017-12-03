@@ -2,6 +2,7 @@ package parbst.report;
 
 import org.junit.Before;
 import org.junit.Test;
+import parbst.collections.BST;
 import parbst.collections.ParallelBST;
 import parbst.util.ParallelBSTUtil;
 
@@ -98,12 +99,12 @@ public class BSTPerformanceTestB {
 	}
 
 
-	static private class SpecialWorker extends Thread {
+	static class SpecialWorker extends Thread {
 
 		private static final int WORK_INSERT = 0;
 		private static final int WORK_SEARCH = 1;
 
-		static private void doRandomWorks(ParallelBST tree, int insertCount, int searchCount, int threadCount) {
+		static void doRandomWorks(BST tree, int insertCount, int searchCount, int threadCount) {
 			// Init works
 			List<Integer> works = new ArrayList<>();
 			for (int i = 0; i < insertCount; i++) works.add(WORK_INSERT);
@@ -127,11 +128,11 @@ public class BSTPerformanceTestB {
 			}
 		}
 
-		private ParallelBST tree;
+		private BST tree;
 		private Random random;
 		private List<Integer> works;
 
-		SpecialWorker(ParallelBST tree, List<Integer> works) {
+		SpecialWorker(BST tree, List<Integer> works) {
 			this.tree = tree;
 			this.random = new Random();
 			this.works = works;
