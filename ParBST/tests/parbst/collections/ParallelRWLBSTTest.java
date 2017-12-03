@@ -25,7 +25,7 @@ public class ParallelRWLBSTTest {
 			dataSet[i] = i+1;//random.nextInt();
 	}
 
-	protected void testInsertAndDeleteBySearch(int threadCount) {
+	protected void testInsertBySearch(int threadCount) {
 		ParallelRWLBST tree = new ParallelRWLBST();
 		ParallelBSTUtil.insertMany(tree, dataSet, threadCount);
 
@@ -43,21 +43,21 @@ public class ParallelRWLBSTTest {
 
 	@Test
 	public void singleThreadTest() {
-		testInsertAndDeleteBySearch(1);
+		testInsertBySearch(1);
 	}
 
 	@Test
 	public void dualThreadTest() {
-		testInsertAndDeleteBySearch(2);
+		testInsertBySearch(2);
 	}
 
 	@Test
 	public void quadThreadTest() {
-		testInsertAndDeleteBySearch(4);
+		testInsertBySearch(4);
 	}
 
 	@Test
 	public void octaThreadTest(){
-		testInsertAndDeleteBySearch(8);
+		testInsertBySearch(8);
 	}
 }

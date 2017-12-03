@@ -33,7 +33,7 @@ public class ParallelRWLBST implements BST {
 			writeLock.lock();
 
 			if (root != null) {
-				// fucking root is changed
+				// Try again
 				writeLock.unlock();
 				insert(data);
 				return;
@@ -54,71 +54,31 @@ public class ParallelRWLBST implements BST {
 					return;
 
 				}else {
-					boolean cmp = (data < cur.data);
-					next = cmp ? cur.left : cur.right;
+					next = (data < cur.data) ? cur.left : cur.right;
 
-					/*if (next == null) {
-						boolean ret = cur.writeTask((node) -> {
-							if (cmp) {
-								if (node.left != null) { return false;} // Concurrency error
-								node.left = new Node(data);
-							}
-							else {
-								if (node.right != null) {return false;} // Concurrency error
-								node.right = new Node(data);
-							}
-							return true;
-						});
-
-						if (ret) {
-							cur.lock.unlock();
-							return;
-						}else {
-							continue;
-						}
-					}*/
 					if (next == null) {
-						cur.lock.unlock();
-						cur.writeLock.lock();
+						cur.lock.unlock(); cur.writeLock.lock();
 
 						next = new Node(data);
 						if (data < cur.data) {
 							if (cur.left != null) {
-								// Concurrency error
-//								System.out.println(Thread.currentThread().getName() + ": one more");
-								cur.writeLock.unlock();
-								cur.lock.lock();
+								// Try again
+								cur.writeLock.unlock(); cur.lock.lock();
 								continue;
 							}
 							cur.left = next;
 						}
 						else {
 							if (cur.right != null) {
-								// Concurrency error
-//								System.out.println(Thread.currentThread().getName() + ": one more");
-								cur.writeLock.unlock();
-								cur.lock.lock();
+								// Try again
+								cur.writeLock.unlock(); cur.lock.lock();
 								continue;
 							}
 							cur.right = next;
 						}
-
 						cur.writeLock.unlock();
 						return; // Success
 					}
-
-//					if (data < cur.data) {
-//						if (cur.left == null)
-//							cur.changeLeft(new Node(data));
-//
-//						next = cur.left;
-//
-//					}else {
-//						if (cur.right == null)
-//							cur.changeRight(new Node(data));
-//
-//						next = cur.right;
-//					}
 
 					next.lock.lock();
 					cur.lock.unlock();
@@ -130,7 +90,14 @@ public class ParallelRWLBST implements BST {
 
 	@Override
 	public int findMin() {
-		return 0;
+		if (root == null) {
+			throw new RuntimeException("cannot findMin.");
+		}
+		Node n = root;
+		while (n.left != null) {
+			n = n.left;
+		}
+		return n.data;
 	}
 
 	@Override
@@ -172,14 +139,61 @@ public class ParallelRWLBST implements BST {
 		throw new UnsupportedOperationException("Currently deletion is not supported in ParallelRWLBST");
 	}
 
+	/**
+	 * Traversal BST by pre-order
+	 */
 	@Override
 	public void preOrderTraversal() {
+		lock.lock();
+		if (root == null) {
+			lock.unlock();
+			return;
+		}
+		root.lock.lock();
+		lock.unlock();
+		preOrderHelper(root);
+	}
+	private void preOrderHelper(Node node) {
+		System.out.print(node+" ");
+		node.lock.unlock();
 
+		if (node.left != null) {
+			node.left.lock.lock();
+			preOrderHelper(node.left);
+		}
+		if (node.right != null) {
+			node.right.lock.lock();
+			preOrderHelper(node.right);
+		}
 	}
 
+	/**
+	 * Traversal BST by in-order
+	 */
 	@Override
 	public void inOrderTraversal() {
+		lock.lock();
+		if (root == null) {
+			lock.unlock();
+			return;
+		}
+		root.lock.lock();
+		lock.unlock();
+		inOrderHelper(root);
+	}
+	private void inOrderHelper(Node node) {
+		if (node.left != null) {
+			node.left.lock.lock();
+			inOrderHelper(node.left);
+		}
+		System.out.print(node+" ");
 
+		if (node.right != null) {
+			node.right.lock.lock();
+			inOrderHelper(node.right);
+		}
+
+		node.lock.unlock();
 	}
 
 
