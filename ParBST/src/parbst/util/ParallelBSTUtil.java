@@ -5,7 +5,7 @@ import parbst.collections.ParallelBST;
 
 public class ParallelBSTUtil {
 
-	public static void insertMany(ParallelBST tree, int[] dataSet, int threadCount) {
+	public static void insertMany(BST tree, int[] dataSet, int threadCount) {
 		try {
 			Thread[] threads = new Thread[threadCount];
 			int seg = dataSet.length / threadCount;
@@ -22,7 +22,7 @@ public class ParallelBSTUtil {
 		}
 	}
 
-	public static void deleteMany(ParallelBST tree, int[] dataSet, int threadCount) {
+	public static void deleteMany(BST tree, int[] dataSet, int threadCount) {
 		try {
 			Thread[] threads = new Thread[threadCount];
 			int seg = dataSet.length / threadCount;
